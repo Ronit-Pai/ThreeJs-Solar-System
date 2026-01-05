@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solar System</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Montserrat:wght@400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        #gui-container {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 10;
+        }
+        .built-by {
+    font-size: 1rem;
+    margin-top: 4px;   
+    color: white;  
+}
+
+    </style>
+</head>
+
+<body>
+    <!-- Landing Page -->
+    <div id="landingPage" class="landing-page">
+        <div class="landing-content">
+            <h1 class="landing-title">Solar System</h1>
+            <p class="built-by">Built By Ronit &#960;</p>
+            <button id="startBtn" class="start-btn">Start</button>
+        </div>
+    </div>
+
+    <!-- Main Project (hidden initially) -->
+    <div id="mainProject" class="main-project" style="display: none;">
+        <button id="playPauseBtn" class="play-pause-btn">
+            <span id="playPauseIcon">⏸</span>
+        </button>
+        <button id="musicBtn" class="music-btn">
+            <span id="musicIcon">🔊</span>
+        </button>
+        <audio id="backgroundMusic">
+            <source src="/music/1.mp3" type="audio/mpeg">
+        </audio>
+        <div id="musicPlayer" class="music-player">
+            <div class="music-player-header">
+                <span class="music-player-title">Music Player</span>
+                <button id="closeMusicPlayer" class="close-music-btn">&times;</button>
+            </div>
+            <div class="music-player-content">
+                <div class="current-song">
+                    <span class="song-label">Now Playing:</span>
+                    <span id="currentSongName" class="song-name">Song 1</span>
+                </div>
+                <div class="music-controls">
+                    <button id="musicPlayPauseBtn" class="music-control-btn">
+                        <span id="musicPlayPauseIcon">⏸</span>
+                    </button>
+                    <button id="nextSongBtn" class="music-control-btn">
+                        <span>⏭</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div id="gui-container"></div>
+    </div>
+
+    <div>
+        <script type="module" src="./script.js"></script>
+    </div>
+
+    <script>
+        // Landing page functionality
+        document.addEventListener('DOMContentLoaded', function () {
+            const landingPage = document.getElementById('landingPage');
+            const mainProject = document.getElementById('mainProject');
+            const startBtn = document.getElementById('startBtn');
+            const body = document.body;
+            const backgroundMusic = document.getElementById('backgroundMusic');
+            const musicBtn = document.getElementById('musicBtn');
+            const musicIcon = document.getElementById('musicIcon');
+            const musicPlayer = document.getElementById('musicPlayer');
+            const closeMusicPlayer = document.getElementById('closeMusicPlayer');
+            const musicPlayPauseBtn = document.getElementById('musicPlayPauseBtn');
+            const musicPlayPauseIcon = document.getElementById('musicPlayPauseIcon');
+            const nextSongBtn = document.getElementById('nextSongBtn');
+            const currentSongName = document.getElementById('currentSongName');
+
+            let isMusicPlaying = false;
+            let currentSongIndex = 0;
+            const songs = [
+                { name: 'Song 1', file: '/music/1.mp3' },
+                { name: 'Song 2', file: '/music/2.mp3' }
+            ];
+
+            // Update song source
+            function loadSong(index) {
+                currentSongIndex = index;
+                backgroundMusic.src = songs[index].file;
+                currentSongName.textContent = songs[index].name;
+                if (isMusicPlaying) {
+                    backgroundMusic.play().catch(function (error) {
+                        console.log('Audio play failed:', error);
+                    });
+                }
+            }
+
+            // Next song functionality
+            function playNextSong() {
+                const nextIndex = (currentSongIndex + 1) % songs.length;
+                loadSong(nextIndex);
+            }
+
+            // Music ended - play next song
+            if (backgroundMusic) {
+                backgroundMusic.addEventListener('ended', function () {
+                    playNextSong();
+                });
+            }
+
+            // Music button - toggle player visibility
+            if (musicBtn && musicPlayer) {
+                musicBtn.addEventListener('click', function () {
+                    if (musicPlayer.classList.contains('show')) {
+                        musicPlayer.classList.remove('show');
+                    } else {
+                        musicPlayer.classList.add('show');
+                    }
+                });
+            }
+
+            // Close music player
+            if (closeMusicPlayer && musicPlayer) {
+                closeMusicPlayer.addEventListener('click', function () {
+                    musicPlayer.classList.remove('show');
+                });
+            }
+
+            // Play/Pause button in player
+            if (musicPlayPauseBtn && backgroundMusic) {
+                musicPlayPauseBtn.addEventListener('click', function () {
+                    if (isMusicPlaying) {
+                        backgroundMusic.pause();
+                        musicPlayPauseIcon.textContent = '▶';
+                        musicIcon.textContent = '🔇';
+                        isMusicPlaying = false;
+                    } else {
+                        backgroundMusic.play().catch(function (error) {
+                            console.log('Audio play failed:', error);
+                        });
+                        musicPlayPauseIcon.textContent = '⏸';
+                        musicIcon.textContent = '🔊';
+                        isMusicPlaying = true;
+                    }
+                });
+            }
+
+            // Next song button
+            if (nextSongBtn) {
+                nextSongBtn.addEventListener('click', function () {
+                    playNextSong();
+                });
+            }
+
+            if (startBtn) {
+                startBtn.addEventListener('click', function () {
+                    landingPage.classList.add('hidden');
+                    setTimeout(function () {
+                        mainProject.style.display = 'block';
+                        body.classList.add('project-started');
+
+                        // Auto-play music when project starts
+                        if (backgroundMusic && musicIcon && musicPlayPauseIcon) {
+                            // Set volume to a reasonable level
+                            backgroundMusic.volume = 0.5;
+
+                            // Load first song
+                            loadSong(0);
+
+                            const playPromise = backgroundMusic.play();
+                            if (playPromise !== undefined) {
+                                playPromise.then(function () {
+                                    // Music started successfully
+                                    musicIcon.textContent = '🔊';
+                                    musicPlayPauseIcon.textContent = '⏸';
+                                    isMusicPlaying = true;
+                                }).catch(function (error) {
+                                    // Autoplay was prevented - user needs to interact first
+                                    console.log('Auto-play prevented by browser:', error);
+                                    musicIcon.textContent = '🔇';
+                                    musicPlayPauseIcon.textContent = '▶';
+                                    isMusicPlaying = false;
+                                });
+                            }
+                        }
+
+                        // Enable OrbitControls after a short delay to ensure they're initialized
+                        setTimeout(function () {
+                            if (window.solarSystemControls) {
+                                window.solarSystemControls.enabled = true;
+                            }
+                        }, 100);
+                    }, 500);
+                });
+            }
+        });
+    </script>
+    <div id="planetInfo" class="planet-info">
+        <div class="planet-info-content">
+            <span class="close-btn" onclick="closeInfo()">&times;</span>
+            <h2 id="planetName"></h2>
+            <p id="planetDetails"></p>
+        </div>
+    </div>
+</body>
+
+</html>
