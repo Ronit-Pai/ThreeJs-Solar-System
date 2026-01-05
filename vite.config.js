@@ -1,6 +1,6 @@
 export default {
     root: 'src/',
-    publicDir: false, // No public directory needed - all assets are in src/
+    publicDir: '../public', // Public directory for static assets
     base: './',
     server:
     {
