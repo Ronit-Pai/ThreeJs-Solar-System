@@ -3,13 +3,13 @@
 An interactive and visually immersive 3D Solar System simulation built with THREE.js and powered by Vite. The project features realistic planets, moons, orbits, dynamic lighting, post-processing effects, and intuitive user controls — delivering a rich, educational space experience.
 
 
-![Solar_System](images/solar_system.png)
+![Solar_System](src/images/solar_system.png)
 
-![Earth](images/earthnew.png)
+![Earth](src/images/earthnew.png)
 
-![Sun](images/sunnew.png)
+![Sun](src/images/sunnew.png)
 
-![Mars](images/mars.png)
+![Mars](src/images/mars.png)
 
 ## Features
 
@@ -77,11 +77,11 @@ An interactive and visually immersive 3D Solar System simulation built with THRE
 ## Installation and Setup
 1. Clone the repository:
     ```sh
-    git clone https://github.com/your-username/3d-solar-system.git
+    git clone https://github.com/Ronit-Pai/ThreeJs-Solar-System
     ```
 2. Navigate to the project directory:
     ```sh
-    cd 3d-solar-system
+    cd filename
     ```
 3. Install dependencies:
     ```sh
